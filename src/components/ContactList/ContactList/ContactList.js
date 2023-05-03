@@ -6,8 +6,8 @@ import { contactsSelector, filterSelector } from 'redux/selectors';
 
 export const ContactList = () => {
   const dispatch = useDispatch();
-  const filter = useSelector(contactsSelector);
-  const contacts = useSelector(filterSelector);
+  const filter = useSelector(filterSelector);
+  const contacts = useSelector(contactsSelector);
   const normalizedFilter = filter.toLowerCase();
   const visibleContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter)
