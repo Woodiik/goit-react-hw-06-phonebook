@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { FormStyles, Label, AddContactButton } from './ContactForm.styled';
-import PropTypes from 'prop-types';
 import { Input } from 'components/Filter/Filter.styled';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContactAction } from 'redux/contactSlice';
+import { contactsSelector } from 'redux/selectors';
 
-export function Form({ onChange, onSubmit }) {
+export function Form() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(contactsSelector);
   const handleChange = e => {
     const { value, name } = e.target;
     if (name === 'name') {
@@ -15,9 +19,9 @@ export function Form({ onChange, onSubmit }) {
       setNumber(value);
     }
   };
-  const onFormSubmit = e => {
+  const onSubmit = e => {
     e.preventDefault();
-    const contactMap = onSubmit.map(contact => {
+    const contactMap = contacts.map(contact => {
       if (name === contact.name) {
         alert(`${contact.name} is already in contacts`);
         return false;
@@ -30,7 +34,7 @@ export function Form({ onChange, onSubmit }) {
     });
 
     if (contactMap.every(el => el === true)) {
-      onChange(name, number);
+      dispatch(addContactAction(name, number));
     }
     reset();
   };
@@ -40,7 +44,7 @@ export function Form({ onChange, onSubmit }) {
   };
 
   return (
-    <FormStyles onSubmit={onFormSubmit}>
+    <FormStyles onSubmit={onSubmit}>
       <Label>
         Name
         <Input
@@ -69,14 +73,3 @@ export function Form({ onChange, onSubmit }) {
     </FormStyles>
   );
 }
-
-Form.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-};
